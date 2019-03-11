@@ -1,6 +1,6 @@
 class Main {
     public static vueController: VueController;
-    public static idGenerator: any;
+    public static idGenerator: IdGenerator;
     public static events: Events;
     public static time: Time;
     static initialization (): void {
