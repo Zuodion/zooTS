@@ -4,7 +4,7 @@ class IdGenerator {
         this._id = 0;
     }
 
-    public generateId () {
+    public generateId (): string {
         this._id += 1;
         return '_' + this._id;
     }

@@ -18,7 +18,7 @@ class Events extends Zoo {
     }
 
     // Loop with auto generate time for Starving
-    private animalStarving (animal: Animal) {
+    private animalStarving (animal: Animal): void {
         let delay: number = ((Math.floor(Math.random() * 10) + 1) * animal._tougness * 1000)
         let starving: number = setInterval(() => {
             animal._currentSatiety -= animal._tougness;
@@ -30,7 +30,7 @@ class Events extends Zoo {
 
     }
 
-    private animalDying (animal: Animal) {
+    private animalDying (animal: Animal): void {
         setInterval(() => {
             if (animal._currentSatiety === 0) {
                 animal.starving();
@@ -44,7 +44,7 @@ class Events extends Zoo {
         }, 10000)
     }
 
-    private animalSleeping (animal: Animal) {
+    private animalSleeping (animal: Animal): void {
         setInterval(() => {
             if (animal.status === 'Dead') return;
             let slept = false;
@@ -62,7 +62,7 @@ class Events extends Zoo {
         }, 60000)
 
     }
-    private animalProcrastination (animal: Animal) {
+    private animalProcrastination (animal: Animal): void {
         setInterval(() => {
             if (animal.status === 'none') animal.walk()
             Refresh.refresh(animal);

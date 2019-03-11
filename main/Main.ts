@@ -3,7 +3,7 @@ class Main {
     public static idGenerator: any;
     public static events: Events;
     public static time: Time;
-    static initialization () {
+    static initialization (): void {
         let zoo: Zoo = new Zoo();
         this.vueController = new VueController(zoo);
         this.vueController.creatingVue()

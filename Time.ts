@@ -1,6 +1,6 @@
 class Time {
     static hours: number = 8;
-    static startTime () {
+    static startTime (): void {
         let minutes: number = 0;
         setInterval(() => {
             let zeroHours: any = 0;

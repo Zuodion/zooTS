@@ -2,7 +2,7 @@ class Zoo {
     public zooArray: Animal[] = []; //Creating Array which contains all animals
 
     // Triggered when button 'Feed all Animals' has pushed
-    private _feedAnimal () {
+    private _feedAnimal (): void {
         for (let i = 0; i < this.zooArray.length; i++) {
             document.getElementsByName('feed-button')[i].click()
         }
