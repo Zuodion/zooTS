@@ -19,28 +19,12 @@ abstract class Animal {
         this._currentSatiety = this._maxSatiety;
         this._id = Main.idGenerator.generateId()
     }
-    protected feed (): void {
-        if (this._status === 'Sleeping' || this._status === 'Dead') return;
+    protected feed () {
+        if (this.status === 'Sleeping' || this.status === 'Dead') return;
         this.status = 'Eating'
-        setTimeout(()=>this.clearStatus(),10000)
+        setTimeout(() => this.status = 'none', 10000)
         if (this._currentSatiety < (this._maxSatiety - this._tougness * 5)) this._currentSatiety += this._tougness * 5;
         else (this._currentSatiety = this._maxSatiety)
-    }
-
-    public clearStatus(): void {
-        this.status = 'none'
-    }
-    public sleep (): void {
-        this.status = 'Sleeping'
-    }
-    public walk (): void {
-        this.status = 'Walking'
-    }
-    public starving (): void {
-        this.status = 'Starving'
-    }
-    public dead (): void {
-        this.status = 'Dead'
     }
 
     public set status (value: string) {

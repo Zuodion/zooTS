@@ -1,4 +1,4 @@
-class Events extends Zoo {
+class Accidents extends Zoo {
     private readonly _zoo: Zoo;
     constructor(zoo: Zoo) {
         super();
@@ -9,39 +9,40 @@ class Events extends Zoo {
 
     }
 
-    //Adding events when animal has arrived
+    //Adding needs when animal has arrived
     public animalNeeds (animal: Animal) {
         this.animalStarving(animal)
-        this.animalDying(animal)
         this.animalSleeping(animal)
-        this.animalProcrastination(animal)
+        this.observer(animal)
     }
 
     // Loop with auto generate time for Starving
     private animalStarving (animal: Animal): void {
-        let delay: number = ((Math.floor(Math.random() * 10) + 1) * animal._tougness * 1000)
+        let delay: number = ((Math.floor(Math.random() * 10) + 1) * animal._tougness * 10)
         let starving: number = setInterval(() => {
             animal._currentSatiety -= animal._tougness;
-            if (animal._currentSatiety < 0) animal._currentSatiety = 0;
+            if (animal._currentSatiety < 0) {
+                animal._currentSatiety = 0;
+                this.animalDying(animal)
+            }
             Refresh.refresh(animal)
             clearInterval(starving)
             this.animalStarving(animal)
         }, delay)
-
     }
 
     private animalDying (animal: Animal): void {
-        setInterval(() => {
-            if (animal._currentSatiety === 0) {
-                animal.starving();
-                animal._currentHp -= ((1 / animal._tougness) * 10);
-                if (animal._currentHp < 0) {
-                    animal._currentHp = 0;
-                    animal.dead();
-                }
-                Refresh.refresh(animal)
+        if (animal._currentSatiety === 0) {
+            animal.status = 'Starving';
+            animal._currentHp -= ((1 / animal._tougness) * 10);
+            if (animal._currentHp < 0) {
+                animal._currentHp = 0;
+                animal.status = 'Dead';
             }
-        }, 10000)
+            Refresh.refresh(animal)
+        } else {
+            animal.status = 'none'
+        }
     }
 
     private animalSleeping (animal: Animal): void {
@@ -50,11 +51,11 @@ class Events extends Zoo {
             let slept = false;
             if (Time.hours > 22 || Time.hours < 4) {
                 if (!slept) {
-                    animal.sleep()
+                    animal.status = 'Sleeping'
                     Refresh.refresh(animal)
                     setTimeout(() => {
                         slept = true;
-                        animal.clearStatus()
+                        animal.status = 'none';
                         Refresh.refresh(animal)
                     }, 360000)
                 }
@@ -62,9 +63,11 @@ class Events extends Zoo {
         }, 60000)
 
     }
-    private animalProcrastination (animal: Animal): void {
+    private observer (animal: Animal): void {
         setInterval(() => {
-            if (animal.status === 'none') animal.walk()
+            if (animal.status === 'none') {
+                animal.status = 'Walking'
+            }
             Refresh.refresh(animal);
         }, 1000)
     }

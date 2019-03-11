@@ -85,7 +85,7 @@ var VueController = /** @class */ (function () {
         var newAnimal = new window[className](animalName, animalAge); //Creating new animal
         this._zoo.zooArray.push(newAnimal); //Added new animal into zoo
         this.setInList(newAnimal); //Adding new animal into animal list in DOM
-        Main.events.animalNeeds(newAnimal); //Added animal's needs
+        Main.accidents.animalNeeds(newAnimal); //Added animal's needs
     };
     //Adding new animal into animal list in DOM
     VueController.prototype.setInList = function (data) {
@@ -126,6 +126,78 @@ var Zoo = /** @class */ (function () {
     };
     return Zoo;
 }());
+var Accidents = /** @class */ (function (_super) {
+    __extends(Accidents, _super);
+    function Accidents(zoo) {
+        var _this = _super.call(this) || this;
+        _this._zoo = zoo;
+        return _this;
+    }
+    Accidents.prototype.startEvent = function () {
+    };
+    //Adding needs when animal has arrived
+    Accidents.prototype.animalNeeds = function (animal) {
+        this.animalStarving(animal);
+        this.animalSleeping(animal);
+        this.observer(animal);
+    };
+    // Loop with auto generate time for Starving
+    Accidents.prototype.animalStarving = function (animal) {
+        var _this = this;
+        var delay = ((Math.floor(Math.random() * 10) + 1) * animal._tougness * 10);
+        var starving = setInterval(function () {
+            animal._currentSatiety -= animal._tougness;
+            if (animal._currentSatiety < 0) {
+                animal._currentSatiety = 0;
+                _this.animalDying(animal);
+            }
+            Refresh.refresh(animal);
+            clearInterval(starving);
+            _this.animalStarving(animal);
+        }, delay);
+    };
+    Accidents.prototype.animalDying = function (animal) {
+        if (animal._currentSatiety === 0) {
+            animal.status = 'Starving';
+            animal._currentHp -= ((1 / animal._tougness) * 10);
+            if (animal._currentHp < 0) {
+                animal._currentHp = 0;
+                animal.status = 'Dead';
+            }
+            Refresh.refresh(animal);
+        }
+        else {
+            animal.status = 'none';
+        }
+    };
+    Accidents.prototype.animalSleeping = function (animal) {
+        setInterval(function () {
+            if (animal.status === 'Dead')
+                return;
+            var slept = false;
+            if (Time.hours > 22 || Time.hours < 4) {
+                if (!slept) {
+                    animal.status = 'Sleeping';
+                    Refresh.refresh(animal);
+                    setTimeout(function () {
+                        slept = true;
+                        animal.status = 'none';
+                        Refresh.refresh(animal);
+                    }, 360000);
+                }
+            }
+        }, 60000);
+    };
+    Accidents.prototype.observer = function (animal) {
+        setInterval(function () {
+            if (animal.status === 'none') {
+                animal.status = 'Walking';
+            }
+            Refresh.refresh(animal);
+        }, 1000);
+    };
+    return Accidents;
+}(Zoo));
 var Animal = /** @class */ (function () {
     function Animal(name, age, toughness) {
         this._status = 'none';
@@ -140,29 +212,14 @@ var Animal = /** @class */ (function () {
     }
     Animal.prototype.feed = function () {
         var _this = this;
-        if (this._status === 'Sleeping' || this._status === 'Dead')
+        if (this.status === 'Sleeping' || this.status === 'Dead')
             return;
         this.status = 'Eating';
-        setTimeout(function () { return _this.clearStatus(); }, 10000);
+        setTimeout(function () { return _this.status = 'none'; }, 10000);
         if (this._currentSatiety < (this._maxSatiety - this._tougness * 5))
             this._currentSatiety += this._tougness * 5;
         else
             (this._currentSatiety = this._maxSatiety);
-    };
-    Animal.prototype.clearStatus = function () {
-        this.status = 'none';
-    };
-    Animal.prototype.sleep = function () {
-        this.status = 'Sleeping';
-    };
-    Animal.prototype.walk = function () {
-        this.status = 'Walking';
-    };
-    Animal.prototype.starving = function () {
-        this.status = 'Starving';
-    };
-    Animal.prototype.dead = function () {
-        this.status = 'Dead';
     };
     Object.defineProperty(Animal.prototype, "status", {
         get: function () {
@@ -221,75 +278,6 @@ var Otter = /** @class */ (function (_super) {
     }
     return Otter;
 }(Animal));
-var Events = /** @class */ (function (_super) {
-    __extends(Events, _super);
-    function Events(zoo) {
-        var _this = _super.call(this) || this;
-        _this._zoo = zoo;
-        return _this;
-    }
-    Events.prototype.startEvent = function () {
-    };
-    //Adding events when animal has arrived
-    Events.prototype.animalNeeds = function (animal) {
-        this.animalStarving(animal);
-        this.animalDying(animal);
-        this.animalSleeping(animal);
-        this.animalProcrastination(animal);
-    };
-    // Loop with auto generate time for Starving
-    Events.prototype.animalStarving = function (animal) {
-        var _this = this;
-        var delay = ((Math.floor(Math.random() * 10) + 1) * animal._tougness * 1000);
-        var starving = setInterval(function () {
-            animal._currentSatiety -= animal._tougness;
-            if (animal._currentSatiety < 0)
-                animal._currentSatiety = 0;
-            Refresh.refresh(animal);
-            clearInterval(starving);
-            _this.animalStarving(animal);
-        }, delay);
-    };
-    Events.prototype.animalDying = function (animal) {
-        setInterval(function () {
-            if (animal._currentSatiety === 0) {
-                animal.starving();
-                animal._currentHp -= ((1 / animal._tougness) * 10);
-                if (animal._currentHp < 0) {
-                    animal._currentHp = 0;
-                    animal.dead();
-                }
-                Refresh.refresh(animal);
-            }
-        }, 10000);
-    };
-    Events.prototype.animalSleeping = function (animal) {
-        setInterval(function () {
-            if (animal.status === 'Dead')
-                return;
-            var slept = false;
-            if (Time.hours > 22 || Time.hours < 4) {
-                if (!slept) {
-                    animal.sleep();
-                    Refresh.refresh(animal);
-                    setTimeout(function () {
-                        slept = true;
-                        animal.clearStatus();
-                        Refresh.refresh(animal);
-                    }, 360000);
-                }
-            }
-        }, 60000);
-    };
-    Events.prototype.animalProcrastination = function (animal) {
-        setInterval(function () {
-            if (animal.status === 'none')
-                animal.walk();
-            Refresh.refresh(animal);
-        }, 1000);
-    };
-    return Events;
-}(Zoo));
 var Main = /** @class */ (function () {
     function Main() {
     }
@@ -298,8 +286,8 @@ var Main = /** @class */ (function () {
         this.vueController = new VueController(zoo);
         this.vueController.creatingVue();
         this.idGenerator = new IdGenerator();
-        this.events = new Events(zoo);
-        this.events.startEvent();
+        this.accidents = new Accidents(zoo);
+        this.accidents.startEvent();
         this.time = new Time();
         Time.startTime();
     };

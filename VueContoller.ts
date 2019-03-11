@@ -35,7 +35,7 @@ class VueController {
         let newAnimal: Animal = new window[className](animalName, animalAge); //Creating new animal
         this._zoo.zooArray.push(newAnimal); //Added new animal into zoo
         this.setInList(newAnimal); //Adding new animal into animal list in DOM
-        Main.events.animalNeeds(newAnimal) //Added animal's needs
+        Main.accidents.animalNeeds(newAnimal) //Added animal's needs
     }
 
     //Adding new animal into animal list in DOM

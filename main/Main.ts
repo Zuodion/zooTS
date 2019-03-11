@@ -1,15 +1,15 @@
 class Main {
     public static vueController: VueController;
     public static idGenerator: IdGenerator;
-    public static events: Events;
+    public static accidents: Accidents;
     public static time: Time;
     static initialization (): void {
         let zoo: Zoo = new Zoo();
         this.vueController = new VueController(zoo);
         this.vueController.creatingVue()
         this.idGenerator = new IdGenerator();
-        this.events = new Events(zoo)
-        this.events.startEvent()
+        this.accidents = new Accidents(zoo)
+        this.accidents.startEvent()
         this.time = new Time()
         Time.startTime()
     }
