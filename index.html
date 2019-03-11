@@ -5,7 +5,7 @@
         <title>zoo</title>
     </head>
     <body>
-
+        <div class="time" id="time"></div>
         Name:<br>
         <input id="animalName" type="text"><br>
         Age:<br>
@@ -13,14 +13,17 @@
 
 
         <select id="animalSpecies" name="animalList">
-            <option value="Cow">Cow</option>
-            <option value="Giraffe">Giraffe</option>
-            <option value="Otter">Otter</option>
         </select>
-        <button onclick="addNewAnimal()">Add new Animal</button>
-
-
+        <button onclick="Main.vueController.addNewAnimal()">Add new Animal</button>
         <h1>Zoo</h1>
-        <script src="zoo.js"></script>
+        <button onclick="Main.vueController._zoo._feedAnimal()">Feed All Animal</button>
+        <button onclick="Main.vueController._zoo._healAnimal()">Heal All Animal</button>
+        <script src="app.js"></script>
     </body>
 </html>
+
+<style>
+    .time{
+        text-align: right;
+    }
+</style>
