@@ -1,7 +1,6 @@
-class Accidents extends Zoo {
+class Accidents {
     private readonly _zoo: Zoo;
     constructor(zoo: Zoo) {
-        super();
         this._zoo = zoo;
     }
 

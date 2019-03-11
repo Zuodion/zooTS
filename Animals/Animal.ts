@@ -19,7 +19,7 @@ abstract class Animal {
         this._currentSatiety = this._maxSatiety;
         this._id = Main.idGenerator.generateId()
     }
-    protected feed () {
+    protected feed (): void {
         if (this.status === 'Sleeping' || this.status === 'Dead') return;
         this.status = 'Eating'
         setTimeout(() => this.status = 'none', 10000)

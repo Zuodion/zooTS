@@ -126,12 +126,9 @@ var Zoo = /** @class */ (function () {
     };
     return Zoo;
 }());
-var Accidents = /** @class */ (function (_super) {
-    __extends(Accidents, _super);
+var Accidents = /** @class */ (function () {
     function Accidents(zoo) {
-        var _this = _super.call(this) || this;
-        _this._zoo = zoo;
-        return _this;
+        this._zoo = zoo;
     }
     Accidents.prototype.startEvent = function () {
     };
@@ -197,7 +194,7 @@ var Accidents = /** @class */ (function (_super) {
         }, 1000);
     };
     return Accidents;
-}(Zoo));
+}());
 var Animal = /** @class */ (function () {
     function Animal(name, age, toughness) {
         this._status = 'none';
