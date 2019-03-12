@@ -68,6 +68,7 @@ var VueController = /** @class */ (function () {
         var select = document.getElementById('animalSpecies');
         for (var i = 0; i < Object.keys(AnimalList).length; i++) {
             var option = document.createElement('option');
+            option.className = 'animal-choice';
             option.value = Object.keys(AnimalList)[i];
             option.innerText = Object.keys(AnimalList)[i];
             select.appendChild(option);
@@ -208,7 +209,7 @@ var Accidents = /** @class */ (function () {
         var delay = ((Math.floor(Math.random() * 10) + 1) * 5000);
         var noises = setInterval(function () {
             var animal = _this.randomAnimal();
-            if (animal) {
+            if (animal.status === 'Walking') {
                 _this._logger.topMessage("A " + animal._name + " say: '" + animal.noise[Math.floor(Math.random() * animal.noise.length)] + "'.");
             }
             clearInterval(noises);
