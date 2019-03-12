@@ -7,7 +7,7 @@ class Main {
     private zoo: Zoo
     constructor(){
         this._idGenerator = new IdGenerator()
-        this._logger = new ConsoleLogger()
+        this._logger = new DomLogger()
         this.zoo = new Zoo();
         this._time = new Time()
         this._accidents = new Accidents(this.zoo, this._logger, this._time)
