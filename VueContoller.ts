@@ -15,6 +15,7 @@ class VueController {
         let select = document.getElementById('animalSpecies');
         for (let i = 0; i < Object.keys(AnimalList).length; i++) {
             let option = document.createElement('option')
+            option.className = 'animal-choice'
             option.value = Object.keys(AnimalList)[i]
             option.innerText = Object.keys(AnimalList)[i]
             select!.appendChild(option)
