@@ -74,6 +74,7 @@ var VueController = /** @class */ (function () {
         }
         //Creating main div with animals
         this.mainDiv = document.createElement('div');
+        this.mainDiv.className = 'animal-list';
         document.body.appendChild(this.mainDiv);
     };
     // Triggered when button 'Add new Animal' has pushed
@@ -93,15 +94,18 @@ var VueController = /** @class */ (function () {
     VueController.prototype.setInList = function (data) {
         //Creating new animalDiv
         var animalDiv = document.createElement('div');
+        animalDiv.className = 'animal';
         this.mainDiv.appendChild(animalDiv);
         //Added animal's stats into animalDiv
         var div = document.createElement('div');
         div.appendChild(document.createTextNode(ConverterAnimal.sheetAnimal(data)));
         div.id = data._id;
+        div.className = 'stats';
         animalDiv.appendChild(div);
         //Added button feed into animalDiv
         var feedButton = document.createElement('button');
         feedButton.name = 'feed-button';
+        feedButton.className = 'feed-button';
         feedButton.appendChild(document.createTextNode("Feed the " + data._name));
         feedButton.setAttribute('onClick', "main._vueController._zoo.zooArray[" + (this._zoo.zooArray.length - 1) + "].feed()"); // Adding event animal.feed() to button
         feedButton.addEventListener("click", function () { return Refresh.refresh(data); }); // Adding refreshing animal's stats after button's click
@@ -325,7 +329,7 @@ var DomLogger = /** @class */ (function () {
 var Main = /** @class */ (function () {
     function Main() {
         this._idGenerator = new IdGenerator();
-        this._logger = new ConsoleLogger();
+        this._logger = new DomLogger();
         this.zoo = new Zoo();
         this._time = new Time();
         this._accidents = new Accidents(this.zoo, this._logger, this._time);

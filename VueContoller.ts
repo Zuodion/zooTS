@@ -21,6 +21,7 @@ class VueController {
         }
         //Creating main div with animals
         this.mainDiv = document.createElement('div');
+        this.mainDiv.className = 'animal-list'
         document.body.appendChild(this.mainDiv)
     }
 
@@ -45,17 +46,20 @@ class VueController {
 
         //Creating new animalDiv
         let animalDiv = document.createElement('div');
+        animalDiv.className  = 'animal'
         this.mainDiv.appendChild(animalDiv)
 
         //Added animal's stats into animalDiv
         let div = document.createElement('div');
         div.appendChild(document.createTextNode(ConverterAnimal.sheetAnimal(data)));
         div.id = data._id;
+        div.className = 'stats'
         animalDiv.appendChild(div);
 
         //Added button feed into animalDiv
         let feedButton = document.createElement('button')
         feedButton.name = 'feed-button'
+        feedButton.className = 'feed-button'
         feedButton.appendChild(document.createTextNode(`Feed the ${data._name}`));
         feedButton.setAttribute('onClick', `main._vueController._zoo.zooArray[${this._zoo.zooArray.length - 1}].feed()`)// Adding event animal.feed() to button
         feedButton.addEventListener("click", () => Refresh.refresh(data))// Adding refreshing animal's stats after button's click
