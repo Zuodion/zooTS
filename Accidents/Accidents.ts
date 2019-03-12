@@ -1,11 +1,17 @@
 class Accidents {
     private readonly _zoo: Zoo;
-    constructor(zoo: Zoo) {
+    private readonly _logger: ILogger;
+    private readonly _time: Time
+
+    constructor(zoo: Zoo, logger: ILogger, time: Time) {
         this._zoo = zoo;
+        this._logger = logger;
+        this._time = time
+
     }
 
-    startEvent () {
-
+    startAccidents () {
+        this.makeSounds()
     }
 
     //Adding needs when animal has arrived
@@ -17,7 +23,7 @@ class Accidents {
 
     // Loop with auto generate time for Starving
     private animalStarving (animal: Animal): void {
-        let delay: number = ((Math.floor(Math.random() * 10) + 1) * animal._tougness * 10)
+        let delay: number = ((Math.floor(Math.random() * 10) + 1) * animal._tougness * 1000)
         let starving: number = setInterval(() => {
             animal._currentSatiety -= animal._tougness;
             if (animal._currentSatiety < 0) {
@@ -48,7 +54,7 @@ class Accidents {
         setInterval(() => {
             if (animal.status === 'Dead') return;
             let slept = false;
-            if (Time.hours > 22 || Time.hours < 4) {
+            if (this._time.hours > 22 || this._time.hours < 4) {
                 if (!slept) {
                     animal.status = 'Sleeping'
                     Refresh.refresh(animal)
@@ -66,12 +72,24 @@ class Accidents {
         setInterval(() => {
             if (animal.status === 'none') {
                 animal.status = 'Walking'
+                Refresh.refresh(animal)
             }
-            Refresh.refresh(animal);
         }, 1000)
     }
 
-    /*/private randomAnimal (): Animal {
+    private makeSounds (): void {
+        let delay: number = ((Math.floor(Math.random() * 10) + 1) * 5000)
+        let noises = setInterval(() => {
+            let animal = this.randomAnimal()
+            if (animal) {
+                this._logger.topMessage(`A ${animal._name} say: '${animal.noise[Math.floor(Math.random() * animal.noise.length)]}'.`)
+            }
+            clearInterval(noises)
+            this.makeSounds()
+        }, delay)
+    }
+
+    private randomAnimal (): Animal {
         return this._zoo.zooArray[Math.floor(Math.random() * this._zoo.zooArray.length)];
-    }*/
+    }
 }

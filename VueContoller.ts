@@ -1,8 +1,10 @@
 class VueController {
     public mainDiv: any;
     private readonly _zoo: Zoo;
+    private readonly _accidents: Accidents
 
-    constructor(zoo: Zoo) {
+    constructor(zoo: Zoo, accidents: Accidents) {
+        this._accidents = accidents
         this._zoo = zoo;
     }
 
@@ -35,7 +37,7 @@ class VueController {
         let newAnimal: Animal = new window[className](animalName, animalAge); //Creating new animal
         this._zoo.zooArray.push(newAnimal); //Added new animal into zoo
         this.setInList(newAnimal); //Adding new animal into animal list in DOM
-        Main.accidents.animalNeeds(newAnimal) //Added animal's needs
+        this._accidents.animalNeeds(newAnimal) //Added animal's needs
     }
 
     //Adding new animal into animal list in DOM
@@ -55,7 +57,7 @@ class VueController {
         let feedButton = document.createElement('button')
         feedButton.name = 'feed-button'
         feedButton.appendChild(document.createTextNode(`Feed the ${data._name}`));
-        feedButton.setAttribute('onClick', `Main.vueController._zoo.zooArray[${this._zoo.zooArray.length - 1}].feed()`)// Adding event animal.feed() to button
+        feedButton.setAttribute('onClick', `main._vueController._zoo.zooArray[${this._zoo.zooArray.length - 1}].feed()`)// Adding event animal.feed() to button
         feedButton.addEventListener("click", () => Refresh.refresh(data))// Adding refreshing animal's stats after button's click
         animalDiv.appendChild(feedButton);
     }

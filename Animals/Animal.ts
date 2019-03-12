@@ -1,5 +1,6 @@
 abstract class Animal {
     abstract _species: string;
+    abstract _noises: Array<string>;
     public _name: string;
     public _age: number;
     public _maxHp: number;
@@ -17,8 +18,9 @@ abstract class Animal {
         this._currentHp = this._maxHp
         this._maxSatiety = 75 * toughness;
         this._currentSatiety = this._maxSatiety;
-        this._id = Main.idGenerator.generateId()
+        this._id = main.idGenerator
     }
+
     protected feed (): void {
         if (this.status === 'Sleeping' || this.status === 'Dead') return;
         this.status = 'Eating'
@@ -32,6 +34,10 @@ abstract class Animal {
     }
     public get status (): string {
         return this._status;
+    }
+
+    public get noise (): Array<string> {
+        return this._noises
     }
 
     //public makesSound () { }

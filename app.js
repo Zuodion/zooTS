@@ -33,8 +33,10 @@ var Refresh = /** @class */ (function () {
 }());
 var Time = /** @class */ (function () {
     function Time() {
+        this.hours = 8;
     }
-    Time.startTime = function () {
+    Time.prototype.startTime = function () {
+        var _this = this;
         var minutes = 0;
         setInterval(function () {
             var zeroHours = 0;
@@ -42,22 +44,22 @@ var Time = /** @class */ (function () {
             minutes++;
             if (minutes > 59) {
                 minutes = 0;
-                Time.hours++;
+                _this.hours++;
             }
-            if (Time.hours > 23)
-                Time.hours = 0;
-            if (Time.hours > 9)
+            if (_this.hours > 23)
+                _this.hours = 0;
+            if (_this.hours > 9)
                 zeroHours = '';
             if (minutes > 9)
                 zeroMinutes = '';
-            document.getElementById('time').innerHTML = "Time in zoo: " + zeroHours + Time.hours + " : " + zeroMinutes + minutes;
+            document.getElementById('time').innerHTML = "Time in zoo: " + zeroHours + _this.hours + " : " + zeroMinutes + minutes;
         }, 1000);
     };
-    Time.hours = 8;
     return Time;
 }());
 var VueController = /** @class */ (function () {
-    function VueController(zoo) {
+    function VueController(zoo, accidents) {
+        this._accidents = accidents;
         this._zoo = zoo;
     }
     // Triggered when Main is initializing
@@ -85,7 +87,7 @@ var VueController = /** @class */ (function () {
         var newAnimal = new window[className](animalName, animalAge); //Creating new animal
         this._zoo.zooArray.push(newAnimal); //Added new animal into zoo
         this.setInList(newAnimal); //Adding new animal into animal list in DOM
-        Main.accidents.animalNeeds(newAnimal); //Added animal's needs
+        this._accidents.animalNeeds(newAnimal); //Added animal's needs
     };
     //Adding new animal into animal list in DOM
     VueController.prototype.setInList = function (data) {
@@ -101,7 +103,7 @@ var VueController = /** @class */ (function () {
         var feedButton = document.createElement('button');
         feedButton.name = 'feed-button';
         feedButton.appendChild(document.createTextNode("Feed the " + data._name));
-        feedButton.setAttribute('onClick', "Main.vueController._zoo.zooArray[" + (this._zoo.zooArray.length - 1) + "].feed()"); // Adding event animal.feed() to button
+        feedButton.setAttribute('onClick', "main._vueController._zoo.zooArray[" + (this._zoo.zooArray.length - 1) + "].feed()"); // Adding event animal.feed() to button
         feedButton.addEventListener("click", function () { return Refresh.refresh(data); }); // Adding refreshing animal's stats after button's click
         animalDiv.appendChild(feedButton);
     };
@@ -127,10 +129,13 @@ var Zoo = /** @class */ (function () {
     return Zoo;
 }());
 var Accidents = /** @class */ (function () {
-    function Accidents(zoo) {
+    function Accidents(zoo, logger, time) {
         this._zoo = zoo;
+        this._logger = logger;
+        this._time = time;
     }
-    Accidents.prototype.startEvent = function () {
+    Accidents.prototype.startAccidents = function () {
+        this.makeSounds();
     };
     //Adding needs when animal has arrived
     Accidents.prototype.animalNeeds = function (animal) {
@@ -141,7 +146,7 @@ var Accidents = /** @class */ (function () {
     // Loop with auto generate time for Starving
     Accidents.prototype.animalStarving = function (animal) {
         var _this = this;
-        var delay = ((Math.floor(Math.random() * 10) + 1) * animal._tougness * 10);
+        var delay = ((Math.floor(Math.random() * 10) + 1) * animal._tougness * 1000);
         var starving = setInterval(function () {
             animal._currentSatiety -= animal._tougness;
             if (animal._currentSatiety < 0) {
@@ -168,11 +173,12 @@ var Accidents = /** @class */ (function () {
         }
     };
     Accidents.prototype.animalSleeping = function (animal) {
+        var _this = this;
         setInterval(function () {
             if (animal.status === 'Dead')
                 return;
             var slept = false;
-            if (Time.hours > 22 || Time.hours < 4) {
+            if (_this._time.hours > 22 || _this._time.hours < 4) {
                 if (!slept) {
                     animal.status = 'Sleeping';
                     Refresh.refresh(animal);
@@ -189,9 +195,24 @@ var Accidents = /** @class */ (function () {
         setInterval(function () {
             if (animal.status === 'none') {
                 animal.status = 'Walking';
+                Refresh.refresh(animal);
             }
-            Refresh.refresh(animal);
         }, 1000);
+    };
+    Accidents.prototype.makeSounds = function () {
+        var _this = this;
+        var delay = ((Math.floor(Math.random() * 10) + 1) * 5000);
+        var noises = setInterval(function () {
+            var animal = _this.randomAnimal();
+            if (animal) {
+                _this._logger.topMessage("A " + animal._name + " say: '" + animal.noise[Math.floor(Math.random() * animal.noise.length)] + "'.");
+            }
+            clearInterval(noises);
+            _this.makeSounds();
+        }, delay);
+    };
+    Accidents.prototype.randomAnimal = function () {
+        return this._zoo.zooArray[Math.floor(Math.random() * this._zoo.zooArray.length)];
     };
     return Accidents;
 }());
@@ -205,7 +226,7 @@ var Animal = /** @class */ (function () {
         this._currentHp = this._maxHp;
         this._maxSatiety = 75 * toughness;
         this._currentSatiety = this._maxSatiety;
-        this._id = Main.idGenerator.generateId();
+        this._id = main.idGenerator;
     }
     Animal.prototype.feed = function () {
         var _this = this;
@@ -224,6 +245,13 @@ var Animal = /** @class */ (function () {
         },
         set: function (value) {
             this._status = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Animal.prototype, "noise", {
+        get: function () {
+            return this._noises;
         },
         enumerable: true,
         configurable: true
@@ -253,6 +281,7 @@ var Cow = /** @class */ (function (_super) {
     function Cow(name, age) {
         var _this = _super.call(this, name, age, 4) || this;
         _this._species = 'Cow';
+        _this._noises = ['Moooooo', 'Moo', 'Mwooooooo', 'Meooooooooow', 'Mooo', 'What a cow doing in the zoo?'];
         return _this;
     }
     return Cow;
@@ -262,6 +291,7 @@ var Giraffe = /** @class */ (function (_super) {
     function Giraffe(name, age) {
         var _this = _super.call(this, name, age, 5) || this;
         _this._species = 'Giraffe';
+        _this._noises = ['Brbrbrb', 'Vrbvbb', 'Irdbdb'];
         return _this;
     }
     return Giraffe;
@@ -271,23 +301,49 @@ var Otter = /** @class */ (function (_super) {
     function Otter(name, age) {
         var _this = _super.call(this, name, age, 2) || this;
         _this._species = 'Otter';
+        _this._noises = ['Ooof', 'if', 'Neif', 'Pir pir'];
         return _this;
     }
     return Otter;
 }(Animal));
+var ConsoleLogger = /** @class */ (function () {
+    function ConsoleLogger() {
+    }
+    ConsoleLogger.prototype.topMessage = function (message) {
+        console.log(message);
+    };
+    return ConsoleLogger;
+}());
+var DomLogger = /** @class */ (function () {
+    function DomLogger() {
+    }
+    DomLogger.prototype.topMessage = function (message) {
+        document.getElementById('logs').innerHTML = message;
+    };
+    return DomLogger;
+}());
 var Main = /** @class */ (function () {
     function Main() {
+        this._idGenerator = new IdGenerator();
+        this._logger = new ConsoleLogger();
+        this.zoo = new Zoo();
+        this._time = new Time();
+        this._accidents = new Accidents(this.zoo, this._logger, this._time);
+        this._vueController = new VueController(this.zoo, this._accidents);
     }
-    Main.initialization = function () {
-        var zoo = new Zoo();
-        this.vueController = new VueController(zoo);
-        this.vueController.creatingVue();
-        this.idGenerator = new IdGenerator();
-        this.accidents = new Accidents(zoo);
-        this.accidents.startEvent();
-        this.time = new Time();
-        Time.startTime();
+    Main.prototype.initialization = function () {
+        this._time.startTime();
+        this._vueController.creatingVue();
+        this._accidents.startAccidents();
     };
+    Object.defineProperty(Main.prototype, "idGenerator", {
+        get: function () {
+            return this._idGenerator.generateId();
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Main;
 }());
-Main.initialization();
+var main = new Main();
+main.initialization();

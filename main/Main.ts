@@ -1,22 +1,30 @@
 class Main {
-    public static vueController: VueController;
-    public static idGenerator: IdGenerator;
-    public static accidents: Accidents;
-    public static time: Time;
-    static initialization (): void {
-        let zoo: Zoo = new Zoo();
-        this.vueController = new VueController(zoo);
-        this.vueController.creatingVue()
-        this.idGenerator = new IdGenerator();
-        this.accidents = new Accidents(zoo)
-        this.accidents.startEvent()
-        this.time = new Time()
-        Time.startTime()
+    private _idGenerator: IdGenerator;
+    private _vueController: VueController;
+    private _accidents: Accidents;
+    private _time: Time;
+    private _logger: ILogger;
+    private zoo: Zoo
+    constructor(){
+        this._idGenerator = new IdGenerator()
+        this._logger = new ConsoleLogger()
+        this.zoo = new Zoo();
+        this._time = new Time()
+        this._accidents = new Accidents(this.zoo, this._logger, this._time)
+        this._vueController = new VueController(this.zoo, this._accidents);
+    }
+    initialization (): void {
+        this._time.startTime()
+        this._vueController.creatingVue()
+        this._accidents.startAccidents()
+    }
+    public get idGenerator(): string{
+        return this._idGenerator.generateId()
     }
 }
 
 interface Window {
     [key: string]: any; //To avoid errors with using Window
 }
-
-Main.initialization()
+let main = new Main()
+main.initialization()
