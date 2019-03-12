@@ -81,7 +81,7 @@ class Accidents {
         let delay: number = ((Math.floor(Math.random() * 10) + 1) * 5000)
         let noises = setInterval(() => {
             let animal = this.randomAnimal()
-            if (animal) {
+            if (animal.status === 'Walking') {
                 this._logger.topMessage(`A ${animal._name} say: '${animal.noise[Math.floor(Math.random() * animal.noise.length)]}'.`)
             }
             clearInterval(noises)
