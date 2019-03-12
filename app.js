@@ -265,9 +265,15 @@ var Animal = /** @class */ (function () {
 }());
 var AnimalList;
 (function (AnimalList) {
+    AnimalList["Bear"] = "Bear";
     AnimalList["Cow"] = "Cow";
+    AnimalList["Flamingo"] = "Flamingo";
     AnimalList["Giraffe"] = "Giraffe";
+    AnimalList["Linx"] = "Linx";
+    AnimalList["Lion"] = "Lion";
     AnimalList["Otter"] = "Otter";
+    AnimalList["Panda"] = "Panda";
+    AnimalList["Parrot"] = "Parrot";
 })(AnimalList || (AnimalList = {}));
 var ConverterAnimal = /** @class */ (function () {
     function ConverterAnimal() {
@@ -281,6 +287,16 @@ var ConverterAnimal = /** @class */ (function () {
     };
     return ConverterAnimal;
 }());
+var Bear = /** @class */ (function (_super) {
+    __extends(Bear, _super);
+    function Bear(name, age) {
+        var _this = _super.call(this, name, age, 10) || this;
+        _this._species = 'Bear';
+        _this._noises = ['Grrrr', 'Rrraaaw', 'Gmhr', 'ROOOOW'];
+        return _this;
+    }
+    return Bear;
+}(Animal));
 var Cow = /** @class */ (function (_super) {
     __extends(Cow, _super);
     function Cow(name, age) {
@@ -290,6 +306,16 @@ var Cow = /** @class */ (function (_super) {
         return _this;
     }
     return Cow;
+}(Animal));
+var Flamingo = /** @class */ (function (_super) {
+    __extends(Flamingo, _super);
+    function Flamingo(name, age) {
+        var _this = _super.call(this, name, age, 2) || this;
+        _this._species = 'Flamingo';
+        _this._noises = ['Tsvin', 'Aaaaaa', 'I dont know what sounds flamingo are creates', 'Cvrink'];
+        return _this;
+    }
+    return Flamingo;
 }(Animal));
 var Giraffe = /** @class */ (function (_super) {
     __extends(Giraffe, _super);
@@ -301,6 +327,26 @@ var Giraffe = /** @class */ (function (_super) {
     }
     return Giraffe;
 }(Animal));
+var Linx = /** @class */ (function (_super) {
+    __extends(Linx, _super);
+    function Linx(name, age) {
+        var _this = _super.call(this, name, age, 3) || this;
+        _this._species = 'Linx';
+        _this._noises = ['Meow', 'Myaooww', 'Mrrrrr', 'Mriyau'];
+        return _this;
+    }
+    return Linx;
+}(Animal));
+var Lion = /** @class */ (function (_super) {
+    __extends(Lion, _super);
+    function Lion(name, age) {
+        var _this = _super.call(this, name, age, 9) || this;
+        _this._species = 'Lion';
+        _this._noises = ['Mew', 'Rrrrraaaaaaw', 'Reeeeooooow'];
+        return _this;
+    }
+    return Lion;
+}(Animal));
 var Otter = /** @class */ (function (_super) {
     __extends(Otter, _super);
     function Otter(name, age) {
@@ -310,6 +356,26 @@ var Otter = /** @class */ (function (_super) {
         return _this;
     }
     return Otter;
+}(Animal));
+var Panda = /** @class */ (function (_super) {
+    __extends(Panda, _super);
+    function Panda(name, age) {
+        var _this = _super.call(this, name, age, 3) || this;
+        _this._species = 'Panda';
+        _this._noises = ['Uf uf', 'Effff', 'rrr'];
+        return _this;
+    }
+    return Panda;
+}(Animal));
+var Parrot = /** @class */ (function (_super) {
+    __extends(Parrot, _super);
+    function Parrot(name, age) {
+        var _this = _super.call(this, name, age, 1) || this;
+        _this._species = 'Parrot';
+        _this._noises = ['Popka durak', 'Kar kar', 'Tsvinb Tsvinb', 'Arrrrr', 'Ryaaaaa', 'Krrrrrr', 'SHS'];
+        return _this;
+    }
+    return Parrot;
 }(Animal));
 var ConsoleLogger = /** @class */ (function () {
     function ConsoleLogger() {
