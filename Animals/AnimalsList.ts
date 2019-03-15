@@ -3,7 +3,7 @@ enum AnimalList{
     Cow = 'Cow',
     Flamingo = 'Flamingo',
     Giraffe = 'Giraffe',
-    Linx = 'Linx',
+    Lynx = 'Lynx',
     Lion = 'Lion',
     Otter = 'Otter',
     Panda = 'Panda',
