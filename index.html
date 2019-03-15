@@ -1,30 +1,54 @@
 <!DOCTYPE html>
 <html>
+
     <head>
         <meta charset="utf-8" />
         <title>zoo</title>
     </head>
-    <body>
+
+    <body class="body">
         <div class="time" id="time"></div>
-        Name:<br>
-        <input id="animalName" class="animal-name" type="text"><br>
-        Age:<br>
-        <input id="animalAge" class="animal-age" type="text"><br><br>
+        <div class="addAnimal">
+            <h3>Create an animal:</h3>
 
+            <div class="name">
+                <p>Name:</p>
+                <input class="animal-name" type="text">
+            </div>
+            <div class="age">
+                <p>Age:</p>
+                <input id="animalAge" class="animal-age" type="text">
+            </div>
 
-        <select id="animalSpecies" class="animal-select" name="animalList">
-        </select>
-        <button onclick="main._vueController.addNewAnimal()" class="add-animal-button">Add new Animal</button>
+            <select id="select-logger" class="select-logger" onchange="main._vueController.changeLogging(value)"></select>
+
+            <div class="animal-select">
+                <select id="animalSpecies" class="animal-select" name="animalList"></select>
+            </div>
+
+            <div class="centerItems">
+                <button onclick="main._vueController.addNewAnimal()" class="add-animal-button">Add new Animal</button>
+            </div>
+
+        </div>
+
         <h1>Zoo</h1>
-        <button onclick="main._vueController._zoo._feedAnimal()" class="feed-all-animals-button">Feed All Animal</button>
-        <button onclick="main._vueController._zoo._healAnimal()" class="heal-all-animals-button">Heal All Animal</button>
-        <div id="logs" class="logs"></div>
-        <script src="app.js"></script>
+        <div class='zoo'>
+
+            <button onclick="main._vueController._zoo._feedAnimal()" class="feed-all-animals-button">Feed All Animal</button>
+            <button onclick="main._vueController._zoo._healAnimal()" class="heal-all-animals-button">Heal All Animal</button>
+            <div id="logs" class="logs"></div>
+            <script src="app.js"></script>
+        </div>
+
     </body>
+
 </html>
 
 <style>
-    .time{
-        text-align: right;
+    .time {
+        font-size: 100%;
+        color: #003600;
+        border: none;
     }
 </style>

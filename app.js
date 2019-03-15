@@ -58,32 +58,47 @@ var Time = /** @class */ (function () {
     return Time;
 }());
 var VueController = /** @class */ (function () {
-    function VueController(zoo, accidents) {
+    function VueController(zoo, accidents, loggingPlace) {
+        this._loggingPlace = loggingPlace;
         this._accidents = accidents;
         this._zoo = zoo;
     }
     // Triggered when Main is initializing
     VueController.prototype.creatingVue = function () {
+        var selectLogger = document.getElementById('select-logger');
+        var options = ['ConsoleLogger', 'DomLogger'];
+        for (var i = 0; i < options.length; i++) {
+            var loggerOption = document.createElement('option');
+            loggerOption.value = options[i];
+            loggerOption.innerText = options[i];
+            selectLogger.appendChild(loggerOption);
+            if (localStorage.getItem('loggingPlace') === options[i])
+                loggerOption.selected = true;
+        }
         //Creating select block on base in Animal list
-        var select = document.getElementById('animalSpecies');
+        var selectAnimal = document.getElementById('animalSpecies');
         for (var i = 0; i < Object.keys(AnimalList).length; i++) {
             var option = document.createElement('option');
             option.className = 'animal-choice';
             option.value = Object.keys(AnimalList)[i];
             option.innerText = Object.keys(AnimalList)[i];
-            select.appendChild(option);
+            selectAnimal.appendChild(option);
         }
         //Creating main div with animals
         this.mainDiv = document.createElement('div');
         this.mainDiv.className = 'animal-list';
         document.body.appendChild(this.mainDiv);
     };
+    VueController.prototype.changeLogging = function (value) {
+        localStorage.setItem('loggingPlace', value);
+        this._loggingPlace = value;
+    };
     // Triggered when button 'Add new Animal' has pushed
     VueController.prototype.addNewAnimal = function () {
         // Accept 'Name', 'Age' input and what species selected 
         var animalName = document.getElementsByTagName('input')[0].value;
         var animalAge = Number(document.getElementsByTagName('input')[1].value);
-        var className = document.getElementsByTagName('select')[0].value;
+        var className = document.getElementById('animalSpecies').value;
         if (Number(animalName) || !Number(animalAge))
             return alert('Please enter the correct name and age'); //If accepted incorrect data
         var newAnimal = new window[className](animalName, animalAge); //Creating new animal
@@ -206,11 +221,13 @@ var Accidents = /** @class */ (function () {
     };
     Accidents.prototype.makeSounds = function () {
         var _this = this;
-        var delay = ((Math.floor(Math.random() * 10) + 1) * 5000);
+        var delay = ((Math.floor(Math.random() * 10) + 1) * 1000);
         var noises = setInterval(function () {
             var animal = _this.randomAnimal();
-            if (animal.status === 'Walking') {
-                _this._logger.topMessage("A " + animal._name + " say: '" + animal.noise[Math.floor(Math.random() * animal.noise.length)] + "'.");
+            if (animal) {
+                if (animal.status === 'Walking') {
+                    _this._logger.topMessage("A " + animal._name + " say: '" + animal.noise[Math.floor(Math.random() * animal.noise.length)] + "'.");
+                }
             }
             clearInterval(noises);
             _this.makeSounds();
@@ -395,17 +412,27 @@ var DomLogger = /** @class */ (function () {
 }());
 var Main = /** @class */ (function () {
     function Main() {
+        this.loggingPlace = this.checkConfiguration();
+        this._logger = new window[this.loggingPlace]();
         this._idGenerator = new IdGenerator();
-        this._logger = new DomLogger();
         this.zoo = new Zoo();
         this._time = new Time();
         this._accidents = new Accidents(this.zoo, this._logger, this._time);
-        this._vueController = new VueController(this.zoo, this._accidents);
+        this._vueController = new VueController(this.zoo, this._accidents, this.loggingPlace);
     }
     Main.prototype.initialization = function () {
         this._time.startTime();
         this._vueController.creatingVue();
         this._accidents.startAccidents();
+    };
+    Main.prototype.checkConfiguration = function () {
+        if (localStorage.getItem('loggingPlace')) {
+            return localStorage.getItem('loggingPlace');
+        }
+        else {
+            localStorage.setItem('loggingPlace', 'ConsoleLogger');
+            return 'ConsoleLogger';
+        }
     };
     Object.defineProperty(Main.prototype, "idGenerator", {
         get: function () {

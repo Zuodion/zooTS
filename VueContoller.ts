@@ -2,28 +2,46 @@ class VueController {
     public mainDiv: any;
     private readonly _zoo: Zoo;
     private readonly _accidents: Accidents
+    private _loggingPlace: string;
 
-    constructor(zoo: Zoo, accidents: Accidents) {
+    constructor(zoo: Zoo, accidents: Accidents, loggingPlace: string) {
+        this._loggingPlace = loggingPlace
         this._accidents = accidents
         this._zoo = zoo;
     }
 
     // Triggered when Main is initializing
     public creatingVue (): void {
+        let selectLogger = document.getElementById('select-logger')
+        let options = ['ConsoleLogger', 'DomLogger']
+        for (let i = 0; i < options.length; i++) {
+            let loggerOption = document.createElement('option')
+            loggerOption.value = options[i]
+            loggerOption.innerText = options[i]
+            selectLogger!.appendChild(loggerOption)
+            if (localStorage.getItem('loggingPlace') === options[i]) loggerOption.selected = true
+        }
+        
 
         //Creating select block on base in Animal list
-        let select = document.getElementById('animalSpecies');
+        let selectAnimal = document.getElementById('animalSpecies');
         for (let i = 0; i < Object.keys(AnimalList).length; i++) {
             let option = document.createElement('option')
             option.className = 'animal-choice'
             option.value = Object.keys(AnimalList)[i]
             option.innerText = Object.keys(AnimalList)[i]
-            select!.appendChild(option)
+            selectAnimal!.appendChild(option)
         }
         //Creating main div with animals
         this.mainDiv = document.createElement('div');
         this.mainDiv.className = 'animal-list'
         document.body.appendChild(this.mainDiv)
+    }
+
+
+    public changeLogging(value: string): void{
+        localStorage.setItem('loggingPlace', value)
+        this._loggingPlace = value
     }
 
     // Triggered when button 'Add new Animal' has pushed
@@ -32,7 +50,7 @@ class VueController {
         // Accept 'Name', 'Age' input and what species selected 
         let animalName: string = document.getElementsByTagName('input')[0].value;
         let animalAge: number = Number(document.getElementsByTagName('input')[1].value);
-        let className: string = document.getElementsByTagName('select')[0].value;
+        let className: string = (<HTMLInputElement>document.getElementById('animalSpecies')).value;
 
         if (Number(animalName) || !Number(animalAge)) return alert('Please enter the correct name and age'); //If accepted incorrect data
 
@@ -47,7 +65,7 @@ class VueController {
 
         //Creating new animalDiv
         let animalDiv = document.createElement('div');
-        animalDiv.className  = 'animal'
+        animalDiv.className = 'animal'
         this.mainDiv.appendChild(animalDiv)
 
         //Added animal's stats into animalDiv

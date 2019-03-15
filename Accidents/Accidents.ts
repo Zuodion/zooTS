@@ -78,11 +78,13 @@ class Accidents {
     }
 
     private makeSounds (): void {
-        let delay: number = ((Math.floor(Math.random() * 10) + 1) * 5000)
+        let delay: number = ((Math.floor(Math.random() * 10) + 1) * 1000)
         let noises = setInterval(() => {
             let animal = this.randomAnimal()
-            if (animal.status === 'Walking') {
-                this._logger.topMessage(`A ${animal._name} say: '${animal.noise[Math.floor(Math.random() * animal.noise.length)]}'.`)
+            if (animal){
+                if (animal.status === 'Walking') {
+                    this._logger.topMessage(`A ${animal._name} say: '${animal.noise[Math.floor(Math.random() * animal.noise.length)]}'.`)
+                }
             }
             clearInterval(noises)
             this.makeSounds()
